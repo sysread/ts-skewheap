@@ -1,0 +1,23 @@
+{
+  "name": "skewheap",
+  "version": "1.0.0",
+  "description": "A self-balancing heap with O(logφ n) performance",
+  "keywords": ["skewheap", "skew", "heap", "data structure", "queue", "priority"],
+  "author": "Jeff Ober <sysread@fastmail.fm>",
+  "license": "ISC",
+  "main": "dist/skewheap.js",
+  "types": "dist/skewheap.d.ts",
+  "scripts": {
+    "build": "make build",
+    "test": "make test",
+    "watch": "make watch"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
