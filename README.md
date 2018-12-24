@@ -4,6 +4,7 @@ SkewHeap
 
 # SYNOPSIS
 
+```
   const SkewHeap = require("skewheap");
 
   const q = new SkewHeap.SkewHeap((a, b) => {
@@ -19,6 +20,7 @@ SkewHeap
   while (!q.is_empty) {
     const item = q.take();
   }
+```
 
 # DESCRIPTION
 
