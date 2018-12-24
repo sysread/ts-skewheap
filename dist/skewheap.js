@@ -126,4 +126,4 @@ var SkewHeap = /** @class */ (function () {
     };
     return SkewHeap;
 }());
-exports.SkewHeap = SkewHeap;
+exports.default = SkewHeap;

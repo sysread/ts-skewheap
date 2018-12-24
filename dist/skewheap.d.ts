@@ -5,7 +5,7 @@ interface Node<T> {
 }
 declare type Compare<T> = (a: T, b: T) => number;
 declare type MaybeNode<T> = Node<T> | null;
-export declare class SkewHeap<T> {
+export default class SkewHeap<T> {
     cmp: Compare<T>;
     protected root: MaybeNode<T>;
     protected count: number;

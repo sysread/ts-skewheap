@@ -7,7 +7,7 @@ SkewHeap - a self-balancing min heap with O(log n) performance
 ```
 const SkewHeap = require("skewheap");
 
-const q = new SkewHeap.SkewHeap((a, b) => {
+const q = new SkewHeap((a, b) => {
   if (a < b) return -1;
   if (b < a) return 1;
   return 0;

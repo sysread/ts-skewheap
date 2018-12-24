@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var _a;
-var skewheap_1 = require("./skewheap");
+var skewheap_1 = __importDefault(require("./skewheap"));
 var chai_1 = require("chai");
 require("mocha");
 /*
@@ -33,12 +36,12 @@ for (var i = 0; i < 100; ++i) {
  */
 describe('SkewHeap', function () {
     it('initializes empty', function () {
-        var heap = new skewheap_1.SkewHeap(compare);
+        var heap = new skewheap_1.default(compare);
         chai_1.assert.equal(heap.size, 0, 'size is 0');
         chai_1.assert.equal(heap.take(), null, 'take returns null');
     });
     it('orders items', function () {
-        var heap = new skewheap_1.SkewHeap(compare);
+        var heap = new skewheap_1.default(compare);
         for (var i = 0; i < items.length; ++i) {
             chai_1.assert.equal(heap.size, i, 'heap size increases after put');
             heap.put(items[i]);
@@ -60,8 +63,8 @@ describe('SkewHeap', function () {
         chai_1.assert.equal(heap.take(), null, 'take() returns null after heap is emptied');
     });
     it('merges with other heaps', function () {
-        var a = new skewheap_1.SkewHeap(compare);
-        var b = new skewheap_1.SkewHeap(compare);
+        var a = new skewheap_1.default(compare);
+        var b = new skewheap_1.default(compare);
         a.put.apply(a, items.slice(0, 50));
         b.put.apply(b, items.slice(50));
         var c = a.merge(b);
@@ -73,8 +76,8 @@ describe('SkewHeap', function () {
         chai_1.assert.deepEqual(c.drain(), ordered, "merged heap contains items in expected order");
     });
     it('merges destructively (absorb)', function () {
-        var a = new skewheap_1.SkewHeap(compare);
-        var b = new skewheap_1.SkewHeap(compare);
+        var a = new skewheap_1.default(compare);
+        var b = new skewheap_1.default(compare);
         a.put.apply(a, items.slice(0, 50));
         b.put.apply(b, items.slice(50));
         a.absorb(b);

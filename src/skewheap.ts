@@ -79,7 +79,7 @@ function merge<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<
 }
 
 
-export class SkewHeap<T> {
+export default class SkewHeap<T> {
   public    cmp:   Compare<T>;
   protected root:  MaybeNode<T> = null;
   protected count: number       = 0;

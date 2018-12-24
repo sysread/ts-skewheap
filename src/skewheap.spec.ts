@@ -1,4 +1,4 @@
-import { SkewHeap } from "./skewheap"
+import SkewHeap from "./skewheap"
 import { assert } from "chai";
 import "mocha";
 
