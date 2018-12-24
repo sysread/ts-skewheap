@@ -1,6 +1,6 @@
 # NAME
 
-SkewHeap
+SkewHeap - a self-balancing min heap with O(log n) performance
 
 # SYNOPSIS
 

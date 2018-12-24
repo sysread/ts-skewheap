@@ -1,7 +1,7 @@
 {
   "name": "skewheap",
   "version": "1.0.0",
-  "description": "A self-balancing heap with O(logφ n) performance",
+  "description": "A self-balancing min heap with O(log n) performance",
   "keywords": ["skewheap", "skew", "heap", "data structure", "queue", "priority"],
   "author": "Jeff Ober <sysread@fastmail.fm>",
   "license": "ISC",
