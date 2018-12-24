@@ -72,4 +72,16 @@ describe('SkewHeap', function () {
         chai_1.assert.equal(c.size, a.size + b.size, "merged heap contains sum of other heaps' values");
         chai_1.assert.deepEqual(c.drain(), ordered, "merged heap contains items in expected order");
     });
+    it('merges destructively (absorb)', function () {
+        var a = new skewheap_1.SkewHeap(compare);
+        var b = new skewheap_1.SkewHeap(compare);
+        a.put.apply(a, items.slice(0, 50));
+        b.put.apply(b, items.slice(50));
+        a.absorb(b);
+        chai_1.assert.equal(a.size, 100, "original a heap's size unchanged");
+        chai_1.assert(!a.is_empty, "original a heap is not empty");
+        chai_1.assert.equal(b.size, 0, "original b heap's size is zero");
+        chai_1.assert(b.is_empty, "original b heap is empty");
+        chai_1.assert.deepEqual(a.drain(), ordered, "merged heap contains items in expected order");
+    });
 });

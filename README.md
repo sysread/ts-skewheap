@@ -5,21 +5,21 @@ SkewHeap - a self-balancing min heap with O(log n) performance
 # SYNOPSIS
 
 ```
-  const SkewHeap = require("skewheap");
+const SkewHeap = require("skewheap");
 
-  const q = new SkewHeap.SkewHeap((a, b) => {
-    if (a < b) return -1;
-    if (b < a) return 1;
-    return 0;
-  });
+const q = new SkewHeap.SkewHeap((a, b) => {
+  if (a < b) return -1;
+  if (b < a) return 1;
+  return 0;
+});
 
-  for (let i = 0; i < 100; ++i) {
-    q.put(i);
-  }
+for (let i = 0; i < 100; ++i) {
+  q.put(i);
+}
 
-  while (!q.is_empty) {
-    const item = q.take();
-  }
+while (!q.is_empty) {
+  const item = q.take();
+}
 ```
 
 # DESCRIPTION
@@ -54,14 +54,36 @@ All arguments must be comparable via the comparison function provided to the
 constructor.
 
 ```
-  heap.put(42)
-  heap.put(1, 2, 3, 4)
+heap.put(42)
+heap.put(1, 2, 3, 4)
 ```
 
 ## take
 
 Returns the next item from the queue. If there are no items in the queue,
 returns `undefined`.
+
+## drain
+
+Drains all items from the heap and returns them in an array.
+
+## merge
+
+Non-destructively merges another heap with this heap, returning a new heap
+containing all of the items in both heaps.
+
+```
+const new_heap = one_heap.merge(another_heap);
+```
+
+## absorb
+
+Destructively absorbs all of the items in another heap. After calling this
+method, the other heap will be empty.
+
+```
+one_heap.absorb(another_heap);
+```
 
 # AUTHOR
 

@@ -16,6 +16,7 @@ export declare class SkewHeap<T> {
     take(): T | null;
     drain(): T[];
     merge(heap: SkewHeap<T>): SkewHeap<T>;
+    absorb(heap: SkewHeap<T>): void;
     explain(): void;
 }
 export {};

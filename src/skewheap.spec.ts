@@ -88,4 +88,22 @@ describe('SkewHeap', () => {
 
     assert.deepEqual(c.drain(), ordered, "merged heap contains items in expected order");
   });
+
+  it('merges destructively (absorb)', () => {
+    const a = new SkewHeap(compare);
+    const b = new SkewHeap(compare);
+
+    a.put(...items.slice(0, 50));
+    b.put(...items.slice(50));
+
+    a.absorb(b);
+
+    assert.equal(a.size, 100, "original a heap's size unchanged");
+    assert(!a.is_empty, "original a heap is not empty");
+
+    assert.equal(b.size, 0, "original b heap's size is zero");
+    assert(b.is_empty, "original b heap is empty");
+
+    assert.deepEqual(a.drain(), ordered, "merged heap contains items in expected order");
+  });
 });

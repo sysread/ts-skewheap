@@ -1,18 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function merge(cmp, a, b) {
-    if (a == null)
-        return b;
-    if (b == null)
-        return a;
-    if (cmp(a.item, b.item) > 0)
-        return merge(cmp, b, a);
-    return {
-        item: a.item,
-        left: merge(cmp, b, a.right),
-        right: a.left,
-    };
-}
 function explain(node, indent) {
     if (indent === void 0) { indent = '  '; }
     console.log(indent + "Node<" + node.item + '>');
@@ -20,6 +7,55 @@ function explain(node, indent) {
         explain(node.left, indent + "  ");
     if (node.right != null)
         explain(node.right, indent + "  ");
+}
+function merge_recursive(cmp, a, b) {
+    if (a == null)
+        return b;
+    if (b == null)
+        return a;
+    if (cmp(a.item, b.item) > 0)
+        return merge_recursive(cmp, b, a);
+    return {
+        item: a.item,
+        left: merge_recursive(cmp, b, a.right),
+        right: a.left,
+    };
+}
+function merge(cmp, a, b) {
+    var queue = [];
+    var subtrees = [];
+    if (a != null)
+        queue.push(a);
+    if (b != null)
+        queue.push(b);
+    // Cut right subtrees from each path
+    while (queue.length > 0) {
+        var node = queue.shift();
+        if (node == null)
+            break;
+        if (node.right != null) {
+            queue.push(node.right);
+            node.right = null;
+        }
+        subtrees.push(node);
+    }
+    // Sort the collected subtrees
+    subtrees.sort(function (a, b) { return cmp(a.item, b.item); });
+    if (subtrees.length > 0) {
+        return subtrees.reduceRight(function (ult, penult) {
+            // Swap the left and right if the penultimate node has a left subtree. Its
+            // right subtree has already been cut.
+            if (penult.left != null)
+                penult.right = penult.left;
+            // Set its left node to be the final node in the list.
+            penult.left = ult;
+            // Return the result
+            return penult;
+        });
+    }
+    else {
+        return null;
+    }
 }
 var SkewHeap = /** @class */ (function () {
     function SkewHeap(cmp) {
@@ -73,8 +109,15 @@ var SkewHeap = /** @class */ (function () {
     SkewHeap.prototype.merge = function (heap) {
         var new_heap = new SkewHeap(this.cmp);
         new_heap.count = this.count + heap.count;
-        new_heap.root = merge(this.cmp, this.root, heap.root);
+        new_heap.root = merge_recursive(this.cmp, this.root, heap.root);
         return new_heap;
+    };
+    SkewHeap.prototype.absorb = function (heap) {
+        this.count += heap.count;
+        this.root = merge(this.cmp, this.root, heap.root);
+        // Wipe out the other heap
+        heap.count = 0;
+        heap.root = null;
     };
     SkewHeap.prototype.explain = function () {
         console.log("SkewHeap<size=" + this.size + ">");
