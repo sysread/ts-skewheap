@@ -8,9 +8,8 @@
   "main": "dist/skewheap.js",
   "types": "dist/skewheap.d.ts",
   "scripts": {
-    "build": "make build",
-    "test": "make test",
-    "watch": "make watch"
+    "build": "tsc",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
