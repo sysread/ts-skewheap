@@ -2,7 +2,14 @@
   "name": "skewheap",
   "version": "1.0.0",
   "description": "A self-balancing min heap with O(log n) performance",
-  "keywords": ["skewheap", "skew", "heap", "data structure", "queue", "priority"],
+  "keywords": [
+    "skewheap",
+    "skew",
+    "heap",
+    "data structure",
+    "queue",
+    "priority"
+  ],
   "author": "Jeff Ober <sysread@fastmail.fm>",
   "license": "ISC",
   "main": "dist/skewheap.js",
@@ -12,11 +19,11 @@
     "test": "mocha -r ts-node/register src/**/*.spec.ts"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.5",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
+    "mocha": "^8.2.1",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.9.7"
   }
 }
