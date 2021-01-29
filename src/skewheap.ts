@@ -4,9 +4,13 @@ interface Node<T> {
   right: Node<T> | null;
 }
 
-type Compare<T>   = (a: T, b: T) => number;
+// A comparison function for type T
+type Compare<T> = (a: T, b: T) => number;
+
+// Either a node or a leaf
 type MaybeNode<T> = Node<T> | null;
 
+// DEBUG: print out an indented representation of the node
 function explain<T>(node: Node<T>, indent: string='  ') {
   console.log(`${indent}Node<` + node.item + '>');
 
@@ -17,12 +21,13 @@ function explain<T>(node: Node<T>, indent: string='  ') {
     explain(node.right, indent + "  ");
 }
 
+// Recursively merge the node with another, non-destructively.
 function merge_recursive<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<T> {
   if (a == null) return b;
   if (b == null) return a;
 
   if (cmp(a.item, b.item) > 0)
-    return merge_recursive(cmp, b, a);
+    [a, b] = [b, a];
 
   return {
     item:  a.item,
@@ -31,7 +36,12 @@ function merge_recursive<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): 
   };
 }
 
+// Destructively merge the node with another. Because it is destructive, it can
+// use the faster but less elegant iterative algorithm.
 function merge<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<T> {
+  if (a == b == null)
+    return null;
+
   const queue    = [];
   const subtrees = [];
 
@@ -48,11 +58,13 @@ function merge<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<
     if (node == null)
       break;
 
+    // Remove the right node and add it to the queue, if present.
     if (node.right != null) {
       queue.push(node.right);
       node.right = null;
     }
 
+    // Add the node to the list of cut nodes
     subtrees.push(node);
   }
 
@@ -61,8 +73,8 @@ function merge<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<
 
   if (subtrees.length > 0) {
     return subtrees.reduceRight((ult, penult) => {
-      // Swap the left and right if the penultimate node has a left subtree. Its
-      // right subtree has already been cut.
+      // Swap the left and right if the penultimate node has a left subtree.
+      // Its right subtree has already been cut.
       if (penult.left != null)
         penult.right = penult.left;
 
@@ -73,9 +85,8 @@ function merge<T>(cmp: Compare<T>, a: MaybeNode<T>, b: MaybeNode<T>): MaybeNode<
       return penult;
     });
   }
-  else {
-    return null;
-  }
+
+  return null;
 }
 
 
@@ -104,7 +115,7 @@ export default class SkewHeap<T> {
     }
   }
 
-  take(): T|null {
+  take(): T | null {
     if (this.root == null)
       return null;
 
@@ -136,6 +147,7 @@ export default class SkewHeap<T> {
   }
 
   absorb(heap: SkewHeap<T>): void {
+    // Increment the count and merge the new heap's root into our own
     this.count += heap.count;
     this.root = merge(this.cmp, this.root, heap.root);
 

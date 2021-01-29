@@ -1,50 +1,57 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function explain(node, indent) {
-    if (indent === void 0) { indent = '  '; }
-    console.log(indent + "Node<" + node.item + '>');
+// DEBUG: print out an indented representation of the node
+function explain(node, indent = '  ') {
+    console.log(`${indent}Node<` + node.item + '>');
     if (node.left != null)
         explain(node.left, indent + "  ");
     if (node.right != null)
         explain(node.right, indent + "  ");
 }
+// Recursively merge the node with another, non-destructively.
 function merge_recursive(cmp, a, b) {
     if (a == null)
         return b;
     if (b == null)
         return a;
     if (cmp(a.item, b.item) > 0)
-        return merge_recursive(cmp, b, a);
+        [a, b] = [b, a];
     return {
         item: a.item,
         left: merge_recursive(cmp, b, a.right),
         right: a.left,
     };
 }
+// Destructively merge the node with another. Because it is destructive, it can
+// use the faster but less elegant iterative algorithm.
 function merge(cmp, a, b) {
-    var queue = [];
-    var subtrees = [];
+    if (a == b == null)
+        return null;
+    const queue = [];
+    const subtrees = [];
     if (a != null)
         queue.push(a);
     if (b != null)
         queue.push(b);
     // Cut right subtrees from each path
     while (queue.length > 0) {
-        var node = queue.shift();
+        const node = queue.shift();
         if (node == null)
             break;
+        // Remove the right node and add it to the queue, if present.
         if (node.right != null) {
             queue.push(node.right);
             node.right = null;
         }
+        // Add the node to the list of cut nodes
         subtrees.push(node);
     }
     // Sort the collected subtrees
-    subtrees.sort(function (a, b) { return cmp(a.item, b.item); });
+    subtrees.sort((a, b) => cmp(a.item, b.item));
     if (subtrees.length > 0) {
-        return subtrees.reduceRight(function (ult, penult) {
-            // Swap the left and right if the penultimate node has a left subtree. Its
-            // right subtree has already been cut.
+        return subtrees.reduceRight((ult, penult) => {
+            // Swap the left and right if the penultimate node has a left subtree.
+            // Its right subtree has already been cut.
             if (penult.left != null)
                 penult.right = penult.left;
             // Set its left node to be the final node in the list.
@@ -53,77 +60,62 @@ function merge(cmp, a, b) {
             return penult;
         });
     }
-    else {
-        return null;
-    }
+    return null;
 }
-var SkewHeap = /** @class */ (function () {
-    function SkewHeap(cmp) {
+class SkewHeap {
+    constructor(cmp) {
         this.root = null;
         this.count = 0;
         this.cmp = cmp;
     }
-    Object.defineProperty(SkewHeap.prototype, "size", {
-        get: function () {
-            return this.count;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(SkewHeap.prototype, "is_empty", {
-        get: function () {
-            return this.root == null;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    SkewHeap.prototype.put = function () {
-        var items = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            items[_i] = arguments[_i];
-        }
-        for (var _a = 0, items_1 = items; _a < items_1.length; _a++) {
-            var item = items_1[_a];
-            var node = { item: item, left: null, right: null };
+    get size() {
+        return this.count;
+    }
+    get is_empty() {
+        return this.root == null;
+    }
+    put(...items) {
+        for (const item of items) {
+            const node = { item: item, left: null, right: null };
             this.root = merge(this.cmp, this.root, node);
             ++this.count;
         }
-    };
-    SkewHeap.prototype.take = function () {
+    }
+    take() {
         if (this.root == null)
             return null;
-        var item = this.root.item;
+        const item = this.root.item;
         this.root = merge(this.cmp, this.root.left, this.root.right);
         --this.count;
         return item;
-    };
-    SkewHeap.prototype.drain = function () {
-        var items = [];
+    }
+    drain() {
+        const items = [];
         while (this.size > 0) {
-            var item = this.take();
+            const item = this.take();
             if (item != null)
                 items.push(item);
         }
         return items;
-    };
-    SkewHeap.prototype.merge = function (heap) {
-        var new_heap = new SkewHeap(this.cmp);
+    }
+    merge(heap) {
+        const new_heap = new SkewHeap(this.cmp);
         new_heap.count = this.count + heap.count;
         new_heap.root = merge_recursive(this.cmp, this.root, heap.root);
         return new_heap;
-    };
-    SkewHeap.prototype.absorb = function (heap) {
+    }
+    absorb(heap) {
+        // Increment the count and merge the new heap's root into our own
         this.count += heap.count;
         this.root = merge(this.cmp, this.root, heap.root);
         // Wipe out the other heap
         heap.count = 0;
         heap.root = null;
-    };
-    SkewHeap.prototype.explain = function () {
-        console.log("SkewHeap<size=" + this.size + ">");
+    }
+    explain() {
+        console.log(`SkewHeap<size=${this.size}>`);
         if (this.root != null)
             explain(this.root);
-    };
-    return SkewHeap;
-}());
+    }
+}
 exports.default = SkewHeap;

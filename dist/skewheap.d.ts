@@ -10,8 +10,8 @@ export default class SkewHeap<T> {
     protected root: MaybeNode<T>;
     protected count: number;
     constructor(cmp: Compare<T>);
-    readonly size: number;
-    readonly is_empty: boolean;
+    get size(): number;
+    get is_empty(): boolean;
     put(...items: T[]): void;
     take(): T | null;
     drain(): T[];
