@@ -74,6 +74,7 @@ class SkewHeap {
     get is_empty() {
         return this.root == null;
     }
+    // Add items to the queue
     put(...items) {
         for (const item of items) {
             const node = { item: item, left: null, right: null };
@@ -81,6 +82,7 @@ class SkewHeap {
             ++this.count;
         }
     }
+    // Take one item from the queue
     take() {
         if (this.root == null)
             return null;
@@ -89,6 +91,7 @@ class SkewHeap {
         --this.count;
         return item;
     }
+    // Drain all items from the queue
     drain() {
         const items = [];
         while (this.size > 0) {
@@ -98,12 +101,14 @@ class SkewHeap {
         }
         return items;
     }
+    // Create a new heap with elements from this heap and another
     merge(heap) {
         const new_heap = new SkewHeap(this.cmp);
         new_heap.count = this.count + heap.count;
         new_heap.root = merge_recursive(this.cmp, this.root, heap.root);
         return new_heap;
     }
+    // Destructively absorb the elements of another heap into this one
     absorb(heap) {
         // Increment the count and merge the new heap's root into our own
         this.count += heap.count;
@@ -112,6 +117,7 @@ class SkewHeap {
         heap.count = 0;
         heap.root = null;
     }
+    // DEBUG: print out an indented representation of the tree
     explain() {
         console.log(`SkewHeap<size=${this.size}>`);
         if (this.root != null)
